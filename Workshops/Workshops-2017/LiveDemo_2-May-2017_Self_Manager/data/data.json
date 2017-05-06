@@ -78,6 +78,14 @@
       "usernameLower": "cuki3",
       "authKey": "undefined&a*=xajP_XX&NIPuGIJIgcTfFWlZ&#BdA*zD*@TUUvNc^TmOfw(",
       "id": "22402c86-f18e-4689-9fc3-237205fad856"
+    },
+    {
+      "username": "test",
+      "passHash": "51abb9636078defbf888d8457a7c76f85c8f114c",
+      "usernameLower": "test",
+      "authKey": "undefinedbLCNJ)QDX_#NGcTvWBRL*W)!r%-KnZvezUJ$P(wmCHqNbp!OuIS",
+      "id": "64147155-d21a-44c1-a3f3-02671edfeaab",
+      "events": []
     }
   ]
 }
