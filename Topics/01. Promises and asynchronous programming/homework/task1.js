@@ -1,10 +1,17 @@
 const mapImage = document.getElementById("map-image");
 
+<<<<<<< HEAD
 let currentLocation = new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(position =>
         resolve(position),
         () => reject('Error recieving the location'))
 }).then(position => {
+=======
+let currentLocation = new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(position =>
+        resolve(position), () => reject('Error recieving the location'))
+).then(position => {
+>>>>>>> origin/master
         let lat = position.coords.latitude,
             lon = position.coords.longitude,
             src = `http://maps.googleapis.com/maps/api/staticmap?center=

@@ -27,11 +27,17 @@ function showAdvice() {
     xhr.send();
 
 
+<<<<<<< HEAD
     let responsesAllArr = JSON.parse(xhr.response);
     console.log(responsesAllArr);
     let responsesCleanArr = clearResponse(responsesAllArr);
     // console.log(responsesCleanArr);
     let tankenSenNow = tankenSen(responsesCleanArr),
+=======
+    let responsesAllArr = JSON.parse(xhr.response),
+        responsesCleanArr = clearResponse(responsesAllArr),
+        tankenSenNow = tankenSen(responsesCleanArr),
+>>>>>>> origin/master
         kijunSenNow = kijunSen(responsesCleanArr),
         senkouSpanANow = senkouSpanA(responsesCleanArr),
         senkouSpanBNow = senkouSpanB(responsesCleanArr),
@@ -178,6 +184,7 @@ function interpreteIndicators(arr, tankenSen, kijunSen, senkouSpanA, senkouSpanB
         negativePoints -= fifthPrice * positiveMultiplicator * negativeMultiplicator;
     }
 
+<<<<<<< HEAD
     let totalPoints = positivePoints + negativePoints;
     console.log(positivePoints);
     console.log(negativePoints);
@@ -187,6 +194,12 @@ function interpreteIndicators(arr, tankenSen, kijunSen, senkouSpanA, senkouSpanB
         negativePoints,
         totalPoints
     }
+=======
+    console.log(positivePoints);
+    console.log(negativePoints);
+
+    console.log('total: ' + (positivePoints + negativePoints));
+>>>>>>> origin/master
 }
 
 
