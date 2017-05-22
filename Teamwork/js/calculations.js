@@ -15,34 +15,30 @@ export class Calculate {
     }
 
     static analyseHistoryPredictions(data, daysAfterPrediction, daysBackFromNow, pointsTreshhold) {
+        // console.log(data);
         let pointsHistory = [];
-
-        for (var index = daysAfterPrediction; index < daysBackFromNow; index++) {
-            var element = data[index];
-
-            let currentData = data.slice(index, data.length);
-
-            let date = Calculate.timeUnixToHuman(element.date),
+        for (var index = daysAfterPrediction; index < daysBackFromNow; index += 1) {
+            let currentData = data.slice(index, (data.length));
+            let date = Calculate.timeUnixToHuman(data[index].date),
                 points = Ichimoku.points(currentData).totalPoints,
                 priceAtPredictionMoment = data[index].close,
                 priceAfterPrediction = +(data[index - daysAfterPrediction].close.toFixed(2)),
                 prediction = true,
                 priceVariation = (((priceAfterPrediction / priceAtPredictionMoment) - 1) * 100).toFixed(2);
 
-            if (points > pointsTreshhold) {
+            if (points >= pointsTreshhold) {
                 if (priceAfterPrediction > priceAtPredictionMoment) {
                     prediction = true;
                 } else {
                     prediction = false;
                 }
-            } else if (points < (pointsTreshhold) * (-1)) {
+            } else if (points <= ((pointsTreshhold) * (-1))) {
                 if (priceAfterPrediction > priceAtPredictionMoment) {
                     prediction = false;
                 } else {
+
                     prediction = true;
                 }
-            } else {
-                break;
             }
 
             pointsHistory.push({
@@ -58,6 +54,7 @@ export class Calculate {
     }
 
     static analysePredictionsPrecision(historyDataArr) {
+
         let countSuccessPredictions = 0,
             countWrongPredictions = 0,
             successPredictionVariatons = [],

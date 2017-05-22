@@ -2,42 +2,75 @@
 import $ from 'jquery';
 import { Calculate } from './calculations';
 import { Ichimoku } from './ichimokuAnalytics';
-import { Data } from './data'
-// import { Navigo } from 'navigo';
+import { getTemplate } from './util/templater';
+import { Request } from './util/requester';
+import { tickerPoints } from './util/tickerPoints';
 
+const now = Date.now();
+const storageUpdatePeriod = 86400000; //24 hours in seconds;
+
+
+if (+localStorage.tickersFetchDate < (now - storageUpdatePeriod)) {
+    console.log('Im in here, Fetching the tickets again');
+    $.ajax({
+            type: "GET",
+            url: "https://poloniex.com/public?command=returnTicker"
+        })
+        .done((data) => {
+            console.log(data);
+
+            for (let ticker in data) {
+                tickersIndexes.push(ticker);
+            }
+            localStorage.tickersStorage = JSON.stringify(tickersIndexes);
+            localStorage.tickersFetchDate = Date.now();
+        });
+}
+let tickersIndexes = JSON.parse(localStorage.tickersStorage);
+// console.log(tickersIndexes);
+
+// Calculate.tickerPoints(tickersIndexes);
+// getTemplate('table')
+//     .then((template) => {
+//         $('#data').html(template(tickersIndexes));
+//     });
+
+// analyseAllTickers(tickersArray)
 // Mock data and input
-let timeInitial = 1;
-let timeEnd = 99999999999999;
 let startYear = 2015;
 let startMonth = 1;
 let startDay = 1;
-let ticket = 'ETH';
-
+// let ticker = 'USDT_ETH';
 
 // check if this amaunt of days in the future the prediction happend:
-let daysAfterPrediction = 5;
+let daysAfterPrediction = 3;
 let daysBackFromNow = 500;
-// To implement this points threshhold for better calculation on strong signals
-let pointsTreshhold = 30;
+
+let pointsTreshhold = 100; // To implement this points threshhold for better calculation on strong signals
+
+tickersIndexes = ['USDT_ETH'];
+// tickersIndexes = ['USDT_ETH', 'USDT_REP', 'USDT_ETC'];
 
 
-let initialDateUnix = (new Date(startYear, startMonth, startDay).getTime() / 1000).toFixed(0);
-let endDateUnix = (Date.now() / 1000).toFixed(0);
+// Get data slowly from poloniex.com to avoid being banned:
+let i = 0;
+let len = tickersIndexes.length;
 
-$.ajax({
-        type: "GET",
-        url: `https://poloniex.com/public?command=returnChartData&currencyPair=USDT_${ticket}&start=${initialDateUnix}&end=${endDateUnix}&period=86400`,
-    })
-    .done((data) => {
-        data.reverse();
-        let historyDataArr = Calculate.analyseHistoryPredictions(data, daysAfterPrediction, daysBackFromNow, pointsTreshhold);
-        let predictions = Calculate.analysePredictionsPrecision(historyDataArr);
+doStuff();
 
-        Data.renderData(predictions);
-
-        console.log(predictions);
-
-    })
-    .fail(() => {
-        console.log('ajax error...');
-    });
+function doStuff() {
+    if (i < len) {
+        tickerPoints(startYear, startMonth, startDay, tickersIndexes[i], daysAfterPrediction, daysBackFromNow, pointsTreshhold)
+            .then((data) => {
+                data.ticker = tickersIndexes[i];
+                console.log(data);
+            })
+            .then(() => {
+                i += 1;
+                // doStuff();
+                setTimeout(doStuff, 1000);
+            })
+    } else {
+        i = 0;
+    }
+}

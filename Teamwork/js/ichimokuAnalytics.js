@@ -2,6 +2,7 @@ export class Ichimoku {
 
     static points(arr) {
         // Four interpretation idicators, each with diferent impact on the total points;
+
         const firstPrice = 40,
             secondPrice = 17,
             thirdPrice = 10,
