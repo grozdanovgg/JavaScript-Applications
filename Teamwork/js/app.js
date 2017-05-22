@@ -40,27 +40,23 @@ let tickersIndexes = JSON.parse(localStorage.tickersStorage);
 let startYear = 2015;
 let startMonth = 1;
 let startDay = 1;
-// let ticker = 'USDT_ETH';
 
 // check if this amaunt of days in the future the prediction happend:
 let daysAfterPrediction = 3;
-let daysBackFromNow = 500;
 
-let pointsTreshhold = 100; // To implement this points threshhold for better calculation on strong signals
+let pointsTreshhold = 40; // To implement this points threshhold for better calculation on strong signals
 
-tickersIndexes = ['USDT_ETH'];
-// tickersIndexes = ['USDT_ETH', 'USDT_REP', 'USDT_ETC'];
-
+// tickersIndexes = ['USDT_ETH', 'BTC_BCN', 'USDT_REP', 'USDT_ETC'];
 
 // Get data slowly from poloniex.com to avoid being banned:
 let i = 0;
 let len = tickersIndexes.length;
 
-doStuff();
+doStuff(); // to rename this...
 
 function doStuff() {
     if (i < len) {
-        tickerPoints(startYear, startMonth, startDay, tickersIndexes[i], daysAfterPrediction, daysBackFromNow, pointsTreshhold)
+        tickerPoints(startYear, startMonth, startDay, tickersIndexes[i], daysAfterPrediction, pointsTreshhold)
             .then((data) => {
                 data.ticker = tickersIndexes[i];
                 console.log(data);
@@ -68,7 +64,7 @@ function doStuff() {
             .then(() => {
                 i += 1;
                 // doStuff();
-                setTimeout(doStuff, 1000);
+                setTimeout(doStuff, 200);
             })
     } else {
         i = 0;
