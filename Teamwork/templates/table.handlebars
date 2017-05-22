@@ -1,22 +1,40 @@
-<table class="table table-hover table-condensed table-responsive">
+<table id="main-table" class="table table-hover table-condensed table-responsive">
     <thead>
         <tr>
-            <th rowspan="2">Index</th>
+            <th rowspan="1">Index</th>
             <th colspan="2">Successful predictions</th>
             <th colspan="2">Wrong predictions</th>
+            <th rowspan="1">Prediction score</th>
         </tr>
         <tr>
-            <th>count</th>
-            <th>average rate change</th>
-            <th>count</th>
-            <th>average rate change</th>
+            <td></td>
+            <td>count</td>
+            <td>average rate change</td>
+            <td>count</td>
+            <td>average rate change</td>
+            <td></td>
         </tr>
     </thead>
-    <tbody>
+    <tbody class="table-body">
         {{#each this}}
         <tr>
             <td>
-            {{this}}
+                {{this.ticker}}
+            </td>
+            <td>
+                {{this.successPredictions}}
+            </td>
+             <td>
+                {{this.succesAveragePriceVariaton}}
+            </td>
+            <td>
+                {{this.wrongPredictions}}
+            </td>
+            <td>
+                {{this.wrongAveragePriceVariaton}}
+            </td>
+            <td class="prediction-score">
+                {{this.predictionScore}}
             </td>
         </tr>
         {{/each}}

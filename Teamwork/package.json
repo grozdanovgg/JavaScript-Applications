@@ -19,6 +19,7 @@
     "sinon": "^2.2.0",
     "sinon-chai": "^2.10.0",
     "systemjs": "^0.20.12",
-    "systemjs-plugin-babel": "0.0.21"
+    "systemjs-plugin-babel": "0.0.21",
+    "tablesorter": "^2.28.10"
   }
 }

@@ -71,9 +71,9 @@ export class Calculate {
                 countWrongPredictions += 1;
                 wrongPredictionsVariations.push(Math.abs(moment.priceVariation));
             }
-        })
-        let successAverageVariations = (successPredictionVariatons.reduce((a, b) => { return a + b; }) / successPredictionVariatons.length) + '%';
-        let wrongAverageVariations = (wrongPredictionsVariations.reduce((a, b) => { return a + b; }) / wrongPredictionsVariations.length) + '%';
+        });
+        let successAverageVariations = (successPredictionVariatons.reduce((a, b) => { return a + b; }) / successPredictionVariatons.length).toFixed(2) + '%';
+        let wrongAverageVariations = (wrongPredictionsVariations.reduce((a, b) => { return a + b; }) / wrongPredictionsVariations.length).toFixed(2) + '%';
 
         return {
             successPredictions: countSuccessPredictions,

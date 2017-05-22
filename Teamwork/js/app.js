@@ -5,6 +5,8 @@ import { Ichimoku } from './ichimokuAnalytics';
 import { getTemplate } from './util/templater';
 import { Request } from './util/requester';
 import { tickerPoints } from './util/tickerPoints';
+import { Coloriser } from './util/coloriser';
+import { tablesorter } from 'tablesorter';
 
 const now = Date.now();
 const storageUpdatePeriod = 86400000; //24 hours in seconds;
@@ -42,9 +44,9 @@ let startMonth = 1;
 let startDay = 1;
 
 // check if this amaunt of days in the future the prediction happend:
-let daysAfterPrediction = 3;
+let daysAfterPrediction = 5;
 
-let pointsTreshhold = 40; // To implement this points threshhold for better calculation on strong signals
+let pointsTreshhold = 70; // To implement this points threshhold for better calculation on strong signals
 
 // tickersIndexes = ['USDT_ETH', 'BTC_BCN', 'USDT_REP', 'USDT_ETC'];
 
@@ -53,20 +55,46 @@ let i = 0;
 let len = tickersIndexes.length;
 
 doStuff(); // to rename this...
+let tickersResultArray = [];
 
 function doStuff() {
+
     if (i < len) {
         tickerPoints(startYear, startMonth, startDay, tickersIndexes[i], daysAfterPrediction, pointsTreshhold)
             .then((data) => {
+                //add ticker properties to each ticker
                 data.ticker = tickersIndexes[i];
-                console.log(data);
+                data.predictionScore = ((data.successPredictions / (data.successPredictions + data.wrongPredictions)) * 100).toFixed(2) + '%';
+
+                if (data.successPredictions) {
+                    tickersResultArray.push(data);
+                }
             })
             .then(() => {
                 i += 1;
-                // doStuff();
                 setTimeout(doStuff, 200);
             })
     } else {
         i = 0;
+        console.log(tickersResultArray);
+
+        getTemplate('table')
+            .then((template) => {
+                $('#data').html(template(tickersResultArray));
+            })
+            .then(() => {
+                $("#main-table").tablesorter();
+            })
+            .then(() => {
+                Coloriser.table();
+            })
+            .then(() => {
+                $('.table-body').on('click', (clicked) => {
+                    let clickedTarget = clicked.target.parentElement;
+                    $('.info').removeClass('info');
+                    $(clickedTarget).addClass('info');
+                })
+            })
+
     }
 }
