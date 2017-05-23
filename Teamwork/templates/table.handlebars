@@ -1,6 +1,20 @@
 <table id="main-table" class="table table-hover table-condensed table-responsive">
     <thead>
         <tr>
+            <td colspan="5">
+                <h4>
+                    Ichimoku cloud prediction score 
+                </h4>
+            </td>
+            <td id="indicator-performance">
+                <h4  class="text-center">
+                    <strong>
+                   {{indexPredictionPerformance}} 
+                    </strong>
+                </h4>
+            </td>
+        </tr>
+        <tr>
             <th rowspan="1">Index</th>
             <th colspan="2">Successful predictions</th>
             <th colspan="2">Wrong predictions</th>
@@ -16,25 +30,25 @@
         </tr>
     </thead>
     <tbody class="table-body">
-        {{#each this}}
+        {{#each tickersResultArray}}
         <tr>
             <td>
-                {{this.ticker}}
+                {{ticker}}
             </td>
             <td>
-                {{this.successPredictions}}
+                {{successPredictions}}
             </td>
              <td>
-                {{this.succesAveragePriceVariaton}}
+                {{succesAveragePriceVariaton}}%
             </td>
             <td>
-                {{this.wrongPredictions}}
+                {{wrongPredictions}}
             </td>
             <td>
-                {{this.wrongAveragePriceVariaton}}
+                {{wrongAveragePriceVariaton}}%
             </td>
             <td class="prediction-score">
-                {{this.predictionScore}}
+                {{predictionScore}}%
             </td>
         </tr>
         {{/each}}

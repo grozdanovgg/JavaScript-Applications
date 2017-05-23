@@ -2,9 +2,9 @@ import $ from 'jquery';
 
 export class Coloriser {
 
-    static table() {
+    static table(elementsToColorBy) {
         //Colorise table according to Prediction score
-        $('.prediction-score').each((i, value) => {
+        elementsToColorBy.each((i, value) => {
             const predictionScore = $(value);
             let contentRaw = predictionScore.html().trim();
             let points = +contentRaw.substring(0, contentRaw.length - 1);
@@ -15,5 +15,8 @@ export class Coloriser {
                 predictionScore.parent().addClass('list-group-item-danger');
             }
         })
+    }
+    static backgroundPrimary(elementsToColorBy) {
+        elementsToColorBy.addClass('bg-primary');
     }
 }
