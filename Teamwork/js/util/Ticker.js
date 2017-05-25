@@ -32,7 +32,7 @@ export class Ticker {
     static getKrakenData(baseUrl, pairsArray) {
 
         let lastTradeClose,
-            result = [],
+            ticker = {},
             arrayToString = pairsArray.join(','),
             url = baseUrl;
 
@@ -40,14 +40,15 @@ export class Ticker {
 
         return Request.get(url)
             .then((data) => {
+                // console.log(data);
 
                 for (let index in data.result) {
                     let indexName = index.slice(1, 4) + index.slice(5);
                     lastTradeClose = +data.result[index].c[0];
 
-                    result.push({ indexName, lastTradeClose });
+                    ticker[indexName] = { indexName, lastTradeClose };
                 }
-                return result;
+                return ticker;
             });
 
     }
