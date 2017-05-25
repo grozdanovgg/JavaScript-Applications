@@ -1,12 +1,16 @@
 function request(method, url, options) {
-    const headers = options.headers || {};
-    const body = options.body || {};
+    let headers = {};
+    let body = {};
+    if (options) {
+        headers = options.headers;
+        body = options.body;
+    }
 
     const promise = new Promise((resolve, reject) => $.ajax({
         url,
         method,
         // Interferes with yahoo query 
-        //contentType: 'application/json',
+        // contentType: 'application/json',
         headers: headers,
         data: JSON.stringify(body),
         success: resolve,
@@ -17,7 +21,7 @@ function request(method, url, options) {
 
 export class Request {
 
-    static get(url, options = {}) {
+    static get(url, options) {
         return request('GET', url, options);
     }
 

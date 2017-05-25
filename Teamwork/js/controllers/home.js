@@ -19,10 +19,10 @@ export function homeController() {
     // let tickersIndexes = [];
     let tickersResult = {};
 
-    Ticker.cacheIndexes(cacheTime)
+    Ticker.cacheIndexes("https://poloniex.com/public?command=returnTicker", cacheTime, 'tickersStorage', 'tickersFetchDate')
         .then(() => {
-            return JSON.parse(localStorage.tickersStorage);
-            // return ['USDT_ETH', 'BTC_BCN', 'USDT_REP', 'USDT_ETC'];
+            // return JSON.parse(localStorage.tickersStorage);
+            return ['USDT_ETH', 'BTC_BCN', 'USDT_REP', 'USDT_ETC'];
         }).then((tickersIndexes) => {
             //TO SEPARATE GETDABLE DATA AND RENDER THE TABLE:
             Calculate.getTableData(tickersIndexes, year, month, day, daysAfterPrediction, pointsTreshhold);

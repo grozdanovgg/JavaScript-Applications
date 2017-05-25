@@ -3,39 +3,57 @@ import { Calculate } from '../calculations';
 
 export class Ticker {
 
-    static cacheIndexes(storageUpdatePeriodHours) {
+    static cacheIndexes(url, storageUpdatePeriodHours, localStorageName, localStorageDate) {
         const period = storageUpdatePeriodHours * 3600000;
         const now = Date.now();
 
-        if (!localStorage.tickersFetchDate || (+localStorage.tickersFetchDate < (now - period))) {
+        if (!localStorage[localStorageDate] || (+localStorage[localStorageDate] < (now - period))) {
             console.log('Im in here, Fetching the tickets again');
 
             let tickersIndexes = [];
 
-            return Request.get("https://poloniex.com/public?command=returnTicker")
+            return Request.get(url)
                 .then((data) => {
-                    // console.log(data);
+                    console.log(data);
 
                     for (let ticker in data) {
                         tickersIndexes.push(ticker);
                     }
-                    localStorage.tickersStorage = JSON.stringify(tickersIndexes);
-                    localStorage.tickersFetchDate = Date.now();
+
+                    localStorage[localStorageName] = JSON.stringify(tickersIndexes);
+                    localStorage[localStorageDate] = Date.now();
                 });
         } else {
             // console.log('else...');
-            return Promise.resolve(localStorage.tickersStorage);
+            return Promise.resolve(localStorage[localStorageName]);
         }
     }
 
-    // static fetchData(storageUpdatePeriodHours, tickersIndexes, tickersResult, startYear, startMonth, startDay, daysAfterPrediction, pointsTreshhold) {
-    //     const period = storageUpdatePeriodHours * 3600000;
-    //     const now = Date.now();
+    static getKrakenData(baseUrl, pairsArray) {
 
-    //     return Calculate.getTableData(tickersIndexes, startYear, startMonth, startDay, daysAfterPrediction, pointsTreshhold)
-    //         .then((tickersResult) => {
-    //             return tickersResult;
-    //         })
+        let lastTradeClose,
+            result = [],
+            arrayToString = pairsArray.join(','),
+            url = baseUrl;
 
-    // }
+        url += arrayToString;
+
+        return Request.get(url)
+            .then((data) => {
+
+                //mystring.replaceAt(4, '')
+                // console.log(data);
+                let obj = {};
+                for (let index in data.result) {
+                    let indexName = index.slice(1, 4) + index.slice(5);
+                    lastTradeClose = +data.result[index].c[0];
+
+                    result.push({ indexName, lastTradeClose });
+                }
+                // console.log(result);
+                return result;
+            });
+
+    }
+
 }
