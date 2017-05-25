@@ -16,15 +16,39 @@ export function krakenController() {
 
     Ticker.getKrakenData("https://api.kraken.com/0/public/Ticker?pair=", pairsArray)
         .then((tickers) => {
-            // console.log(ticker);
 
             let tickersCombinedPrices = tickerAllPrices(tickers);
+
+            let diferences = findDiferences(tickersCombinedPrices);
+
             console.log(tickersCombinedPrices);
-
-
-
-
+            console.log(diferences);
         })
+
+    function findDiferences(tickersCombinedPrices) {
+        let combinedTicker;
+        for (let i in tickersCombinedPrices) {
+            let min = Number.MAX_SAFE_INTEGER,
+                max = Number.MIN_SAFE_INTEGER,
+                diference;
+            combinedTicker = tickersCombinedPrices[i];
+
+            for (let j in combinedTicker.pricesInEuro) {
+                let pairPrice = combinedTicker.pricesInEuro[j];
+                if (pairPrice < min) {
+                    min = pairPrice;
+                }
+                if (pairPrice > max) {
+                    max = pairPrice;
+                }
+
+                diference = max - min;
+                combinedTicker.diference = diference;
+                combinedTicker.diferencePercentage = ((max / min) - 1) * 100;
+            }
+        }
+        return tickersCombinedPrices;
+    }
 
     // .then((templateData) => {
 
@@ -44,18 +68,10 @@ export function krakenController() {
     //         })
     // })
 
-
-
-
-
-
 }
 
 function tickerAllPrices(tickersObj) {
     let tickersCombinedPrices = {};
-
-    // let priceInETH;
-    // let priceInXBT;
 
     for (let i in tickersObj) {
         let pricesInEuro = {};
@@ -68,7 +84,6 @@ function tickerAllPrices(tickersObj) {
         if (cacheOutCurency !== 'EUR') {
             euroCoeficient = tickersObj[cacheOutCurency + 'EUR'].lastTradeClose;
         }
-
 
         pricesInEuro[symbol] = ticker.lastTradeClose * euroCoeficient;
         if (tickersCombinedPrices[mainCurency]) {
