@@ -41,16 +41,12 @@ export class Ticker {
         return Request.get(url)
             .then((data) => {
 
-                //mystring.replaceAt(4, '')
-                // console.log(data);
-                let obj = {};
                 for (let index in data.result) {
                     let indexName = index.slice(1, 4) + index.slice(5);
                     lastTradeClose = +data.result[index].c[0];
 
                     result.push({ indexName, lastTradeClose });
                 }
-                // console.log(result);
                 return result;
             });
 
