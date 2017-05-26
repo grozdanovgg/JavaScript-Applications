@@ -1,56 +1,79 @@
-import { Request } from '../util/requester';
-import { Calculate } from '../calculations';
-
 export class Ticker {
 
-    static cacheIndexes(url, storageUpdatePeriodHours, localStorageName, localStorageDate) {
-        const period = storageUpdatePeriodHours * 3600000;
-        const now = Date.now();
+    constructor(name) {
+        this._name = name;
+    }
 
-        if (!localStorage[localStorageDate] || (+localStorage[localStorageDate] < (now - period))) {
-            console.log('Im in here, Fetching the tickets again');
 
-            let tickersIndexes = [];
+    get name() {
+        return this._name;
+    }
 
-            return Request.get(url)
-                .then((data) => {
-                    console.log(data);
 
-                    for (let ticker in data) {
-                        tickersIndexes.push(ticker);
-                    }
+    set minPricePair(pair) {
+        Validator.string(pair);
+        Validator.stringLength(pair, 6, 8);
+        this._minPricePair = pair;
 
-                    localStorage[localStorageName] = JSON.stringify(tickersIndexes);
-                    localStorage[localStorageDate] = Date.now();
-                });
-        } else {
-            // console.log('else...');
-            return Promise.resolve(localStorage[localStorageName]);
+    }
+    get minPricePair() {
+        return this._minPricePair;
+    }
+
+
+    set minPrice(price) {
+        Validator.isNumeric(price);
+        this._minPrice = price;
+    }
+    get minPrice() {
+        return this._minPrice;
+    }
+
+
+    set maxPricePair(pair) {
+        Validator.string(pair);
+        Validator.stringLength(pair, 6, 8);
+        this._maxPricePair = pair;
+    }
+    get maxPricePair() {
+        return this._maxPricePair;
+    }
+
+
+    set maxPrice(price) {
+        Validator.isNumeric(price);
+        this._maxPrice = price;
+    }
+    get maxPrice() {
+        return this._maxPrice;
+    }
+
+
+    set pricesInEuro(pricesObj) {
+        this._pricesInEuro = pricesObj;
+    }
+    get pricesInEuro() {
+        return this._pricesInEuro;
+    }
+}
+
+
+
+class Validator {
+
+    static string(input) {
+        if (typeof input !== 'string') {
+            throw Error('input is not a string');
         }
     }
-
-    static getKrakenData(baseUrl, pairsArray) {
-
-        let lastTradeClose,
-            ticker = {},
-            arrayToString = pairsArray.join(','),
-            url = baseUrl;
-
-        url += arrayToString;
-
-        return Request.get(url)
-            .then((data) => {
-                // console.log(data);
-
-                for (let index in data.result) {
-                    let indexName = index.slice(1, 4) + index.slice(5);
-                    lastTradeClose = +data.result[index].c[0];
-
-                    ticker[indexName] = { indexName, lastTradeClose };
-                }
-                return ticker;
-            });
-
+    static stringLength(input, minLength, maxlength) {
+        if (input.length < minLength || input.length > maxlength) {
+            throw Error('input is below or above lenght limit')
+        }
     }
-
+    static isNumeric(input) {
+        if (isNaN(input)) {
+            throw Error('input is not a number')
+        }
+    }
 }

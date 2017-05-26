@@ -5,95 +5,152 @@ import { getTemplate } from '../util/templater';
 import { Request } from '../util/requester';
 import { tickerPoints } from '../util/tickerPoints';
 import { Coloriser } from '../util/coloriser';
+//@ts-ignore
 import { tablesorter } from 'tablesorter';
+import { Data } from '../util/Data';
 import { Ticker } from '../util/Ticker';
+import { Pair } from '../util/Pair';
 
 export function krakenController() {
 
     const sellAmmountEuro = 100;
 
-    const pairsArray = ['ETHEUR', 'ETHXBT', 'ETCEUR', 'ETCXBT', 'ETCETH', 'REPEUR', 'REPXBT', 'REPETH', 'XBTEUR'];
+    const pairsArray = ['ETHEUR', 'ETHXBT', 'ETCEUR', 'ETCXBT', 'ETCETH', 'REPEUR', 'REPXBT', 'REPETH', 'XBTEUR', 'ICNXBT', 'ICNETH'];
 
-    Ticker.getKrakenData("https://api.kraken.com/0/public/Ticker?pair=", pairsArray)
-        .then((tickers) => {
+    Data.getKrakenData("https://api.kraken.com/0/public/Ticker?pair=", pairsArray)
+        .then(extractData)
+        .then((data) => {
+            // console.log(data);
 
-            let tickersCombinedPrices = tickerAllPrices(tickers);
 
-            let diferences = findDiferences(tickersCombinedPrices);
+            let tickersCombinedPrices = tickerAllPrices(data);
+            // findDiferences(tickersCombinedPrices);
 
             console.log(tickersCombinedPrices);
-            console.log(diferences);
+
+
+
+            // let test = new Ticker('ewrdf');
+
+            // test.minPrice = 55.5234;
+            // test.minPricePair = 'qterwt';
+            // test.maxPrice = 65;
+            // test.maxPricePair = 'rhydfg';
+
+            // console.log(test)
+
         })
 
-    function findDiferences(tickersCombinedPrices) {
-        let combinedTicker;
-        for (let i in tickersCombinedPrices) {
-            let min = Number.MAX_SAFE_INTEGER,
-                max = Number.MIN_SAFE_INTEGER,
-                diference;
-            combinedTicker = tickersCombinedPrices[i];
-
-            for (let j in combinedTicker.pricesInEuro) {
-                let pairPrice = combinedTicker.pricesInEuro[j];
-                if (pairPrice < min) {
-                    min = pairPrice;
-                }
-                if (pairPrice > max) {
-                    max = pairPrice;
-                }
-
-                diference = max - min;
-                combinedTicker.diference = diference;
-                combinedTicker.diferencePercentage = ((max / min) - 1) * 100;
-            }
-        }
-        return tickersCombinedPrices;
-    }
-
-    // .then((templateData) => {
-
-    //     getTemplate('kraken')
-    //         .then((template) => {
-    //             $('#data').html(template(templateData));
-    //         })
-    //         .then(() => {
-    //             $("#main-table").tablesorter();
-    //         })
-    //         .then(() => {
-    //             $('.table-body').on('click', (clicked) => {
-    //                 let clickedTarget = clicked.target.parentElement;
-    //                 $('.info').removeClass('info');
-    //                 $(clickedTarget).addClass('info');
-    //             })
-    //         })
-    // })
 
 }
 
-function tickerAllPrices(tickersObj) {
-    let tickersCombinedPrices = {};
+function tickerAllPrices(pairsArray) {
 
-    for (let i in tickersObj) {
-        let pricesInEuro = {};
-        let euroCoeficient = 1;
-        let ticker = tickersObj[i];
-        let cacheOutCurency = ticker.indexName.slice(3);
-        let mainCurency = ticker.indexName.slice(0, 3);
-        let symbol = mainCurency + cacheOutCurency;
+    let resultArray = [];
 
-        if (cacheOutCurency !== 'EUR') {
-            euroCoeficient = tickersObj[cacheOutCurency + 'EUR'].lastTradeClose;
+    let tickers = {};
+
+    for (let pair of pairsArray) {
+
+        let pricesInEuro = {},
+            euroCoeficient = 1,
+            pairOutCurency = pair.name.slice(3),
+            pairMainCurency = pair.name.slice(0, 3),
+            symbol = pairMainCurency + pairOutCurency,
+            ticker;
+
+        if (pairOutCurency !== 'EUR') {
+            let target = pairsArray.find(i => { return i.name === `${pairOutCurency}EUR` });
+            euroCoeficient = target.askPrice;
         }
 
-        pricesInEuro[symbol] = ticker.lastTradeClose * euroCoeficient;
-        if (tickersCombinedPrices[mainCurency]) {
-            tickersCombinedPrices[mainCurency].pricesInEuro[symbol] = pricesInEuro[symbol];
+        pricesInEuro[symbol] = pair.askPrice * euroCoeficient;
+
+
+        if (resultArray.length > 0) {
+            ticker = resultArray.find((ticker) => { return ticker.name === pairMainCurency })
+            if (!ticker) {
+                ticker = new Ticker(pairMainCurency);
+                resultArray.push(ticker);
+            }
         } else {
-            tickersCombinedPrices[mainCurency] = {
-                pricesInEuro
-            };
+            ticker = new Ticker(pairMainCurency);
+            resultArray.push(ticker);
         }
+        if (ticker.pricesInEuro) {
+            ticker.pricesInEuro[symbol] = pricesInEuro[symbol];
+        } else {
+            ticker.pricesInEuro = pricesInEuro;
+        }
+    }
 
+    resultArray.forEach(obj => {
+        tickers[obj.name] = obj;
+    })
+    return tickers;
+};
+
+function extractData(data) {
+
+
+    let resultArray = [],
+        indexName,
+        askPrice;
+    for (let index in data.result) {
+        indexName = index.slice(1, 4) + index.slice(5);
+        askPrice = +data.result[index].a[0];
+        let ticker = new Pair(indexName, askPrice);
+        resultArray.push(ticker);
+    }
+    return resultArray;
+}
+
+function findDiferences(tickersCombinedPrices) {
+    let combinedTicker;
+    for (let i in tickersCombinedPrices) {
+        let min = Number.MAX_SAFE_INTEGER,
+            max = Number.MIN_SAFE_INTEGER,
+            diference;
+        combinedTicker = tickersCombinedPrices[i];
+
+        for (let j in combinedTicker.pricesInEuro) {
+            let pairPrice = combinedTicker.pricesInEuro[j];
+            if (pairPrice < min) {
+                min = pairPrice;
+            }
+            if (pairPrice > max) {
+                max = pairPrice;
+            }
+
+            diference = max - min;
+            combinedTicker.diference = diference;
+            combinedTicker.diferencePercentage = ((max / min) - 1) * 100;
+        }
     }
     return tickersCombinedPrices;
-};
+}
+
+
+
+
+
+
+
+
+// .then((templateData) => {
+
+//     getTemplate('kraken')
+//         .then((template) => {
+//             $('#data').html(template(templateData));
+//         })
+//         .then(() => {
+//             $("#main-table").tablesorter();
+//         })
+//         .then(() => {
+//             $('.table-body').on('click', (clicked) => {
+//                 let clickedTarget = clicked.target.parentElement;
+//                 $('.info').removeClass('info');
+//                 $(clickedTarget).addClass('info');
+//             })
+//         })
+// })

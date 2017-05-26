@@ -5,8 +5,9 @@ import { getTemplate } from '../util/templater';
 import { Request } from '../util/requester';
 import { tickerPoints } from '../util/tickerPoints';
 import { Coloriser } from '../util/coloriser';
+//@ts-ignore
 import { tablesorter } from 'tablesorter';
-import { Ticker } from '../util/Ticker';
+import { Data } from '../util/Data';
 
 export function homeController() {
     const cacheTime = 1, //hours
@@ -18,8 +19,8 @@ export function homeController() {
 
     // let tickersIndexes = [];
     let tickersResult = {};
-
-    Ticker.cacheIndexes("https://poloniex.com/public?command=returnTicker", cacheTime, 'tickersStorage', 'tickersFetchDate')
+    //@ts-ignore
+    Data.cacheIndexes("https://poloniex.com/public?command=returnTicker", cacheTime, 'tickersStorage', 'tickersFetchDate')
         .then(() => {
             // return JSON.parse(localStorage.tickersStorage);
             return ['USDT_ETH', 'BTC_BCN', 'USDT_REP', 'USDT_ETC'];

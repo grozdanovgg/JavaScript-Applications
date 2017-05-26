@@ -8,7 +8,7 @@ import { krakenController } from './controllers/kraken';
 let root = null,
     useHash = true,
     hash = '#!';
-
+//@ts-ignore
 let router = new Navigo(root, useHash, hash);
 
 router.on({
