@@ -10,50 +10,19 @@ export class Ticker {
     }
 
 
-    set minPricePair(pair) {
-        Validator.string(pair);
-        Validator.stringLength(pair, 6, 8);
-        this._minPricePair = pair;
-
+    set prices(pricesObj) {
+        this._prices = pricesObj;
     }
-    get minPricePair() {
-        return this._minPricePair;
+    get prices() {
+        return this._prices;
     }
 
 
-    set minPrice(price) {
-        Validator.isNumeric(price);
-        this._minPrice = price;
+    set diference(obj) {
+        this._diference = obj;
     }
-    get minPrice() {
-        return this._minPrice;
-    }
-
-
-    set maxPricePair(pair) {
-        Validator.string(pair);
-        Validator.stringLength(pair, 6, 8);
-        this._maxPricePair = pair;
-    }
-    get maxPricePair() {
-        return this._maxPricePair;
-    }
-
-
-    set maxPrice(price) {
-        Validator.isNumeric(price);
-        this._maxPrice = price;
-    }
-    get maxPrice() {
-        return this._maxPrice;
-    }
-
-
-    set pricesInEuro(pricesObj) {
-        this._pricesInEuro = pricesObj;
-    }
-    get pricesInEuro() {
-        return this._pricesInEuro;
+    get diference() {
+        return this._diference;
     }
 }
 
