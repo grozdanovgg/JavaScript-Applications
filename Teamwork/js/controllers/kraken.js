@@ -22,6 +22,7 @@ export function krakenController() {
         .then(extractData)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         // .then((data) => { console.log(data); return data; })
         .then(tickerGetEuroPrices)
         .then(tickerAddMathData)
@@ -90,6 +91,30 @@ function suggestAction(data) {
         })
 
 =======
+
+            // console.log(test)
+
+        })
+
+>>>>>>> parent of 2304a83... Proggress in analytics calculations.
+=======
+        .then((data) => {
+            // console.log(data);
+
+
+            let tickersCombinedPrices = tickerAllPrices(data);
+            // findDiferences(tickersCombinedPrices);
+
+            console.log(tickersCombinedPrices);
+
+
+
+            // let test = new Ticker('ewrdf');
+
+            // test.minPrice = 55.5234;
+            // test.minPricePair = 'qterwt';
+            // test.maxPrice = 65;
+            // test.maxPricePair = 'rhydfg';
 
             // console.log(test)
 
