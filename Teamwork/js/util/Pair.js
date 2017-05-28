@@ -1,10 +1,9 @@
 export class Pair {
 
 
-    constructor(name, askPrice, bidPrice) {
+    constructor(name, askPrice) {
         this._name = name;
         this._askPrice = askPrice;
-        this._bidPrice = bidPrice;
     }
 
 
@@ -14,10 +13,6 @@ export class Pair {
 
     get askPrice() {
         return this._askPrice;
-    }
-
-    get bidPrice() {
-        return this._bidPrice;
     }
 
 }
