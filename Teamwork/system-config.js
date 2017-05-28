@@ -40,6 +40,7 @@ System.config({
         'navigo': './node_modules/navigo/lib/navigo.min.js',
         'handlebars': './node_modules/handlebars/dist/handlebars.min.js',
         'tablesorter': './node_modules/tablesorter/dist/js/jquery.tablesorter.js',
+        'bittrex': './node_modules/node.bittrex.api/node.bittrex.api.js',
 
         // 'bloodhound': './node_modules/typeahead.js-jspm/dist/bloodhound.min.js',
         // 'typeahead': './node_modules/typeahead.js-jspm/dist/typeahead.jquery.min.js',

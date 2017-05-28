@@ -11,6 +11,7 @@ import { Data } from '../util/Data';
 import { Ticker } from '../util/Ticker';
 import { Pair } from '../util/Pair';
 
+
 export function krakenController() {
 
     const sellAmmountEuro = 100;
@@ -22,8 +23,13 @@ export function krakenController() {
         // .then((data) => { console.log(data); return data; })
         .then(tickerGetEuroPrices)
         .then(tickerAddMathData)
+        // .then(addSuggestActions)
         .then(findBiggestDiference)
         .then(suggestAction)
+}
+
+function addSuggestActions(data) {
+    console.log(data);
 }
 
 function suggestAction(data) {
@@ -40,10 +46,15 @@ function suggestAction(data) {
     console.log(percent);
     // } else {
 
-    let tempIndex = data.bestTicker.diference.maxBid.pair.slice(3) + data.bestTicker.diference.minAsk.pair.slice(3);
-    let tempIndexPrice = data.tickers[tempIndex.slice(0, 3)].prices[tempIndex].ask;
-    console.log(tempIndex);
-    console.log(tempIndexPrice);
+    let exitPairName = data.bestTicker.diference.maxBid.pair.slice(3) + data.bestTicker.diference.minAsk.pair.slice(3);
+    // let indexMainName = data.tickers[exitPairName.slice(0, 3)];
+    // console.log(indexMainName);
+    // console.log(exitPairName);
+
+    let tempIndexPrice = data.tickers[exitPairName.slice(0, 3)].prices[exitPairName].ask;
+
+
+
     stepOne = `Buy ${data.bestTicker.diference.minAsk.pair.slice(0,3)} with ${data.bestTicker.diference.minAsk.pair.slice(3)} at ${data.bestTicker.diference.minAsk.price}`;
     stepTwo = `Sell ${data.bestTicker.diference.maxBid.pair.slice(0,3)} for ${data.bestTicker.diference.maxBid.pair.slice(3)} at ${data.bestTicker.diference.maxBid.price}`;
     stepThree = `Sell ${data.bestTicker.diference.maxBid.pair.slice(3)} for ${data.bestTicker.diference.minAsk.pair.slice(3)} at ${tempIndexPrice}`;
