@@ -21,6 +21,7 @@ export function krakenController() {
     Data.getKrakenData("https://api.kraken.com/0/public/Ticker?pair=", pairsArray)
         .then(extractData)
 <<<<<<< HEAD
+<<<<<<< HEAD
         // .then((data) => { console.log(data); return data; })
         .then(tickerGetEuroPrices)
         .then(tickerAddMathData)
@@ -63,6 +64,18 @@ function suggestAction(data) {
     // stepFour = `Buy ${ticker.diference.minAsk.pair}`;
 =======
 >>>>>>> parent of 2304a83... Proggress in analytics calculations.
+=======
+        .then((data) => {
+            // console.log(data);
+
+
+            let tickersCombinedPrices = tickerAllPrices(data);
+            // findDiferences(tickersCombinedPrices);
+
+            console.log(tickersCombinedPrices);
+
+
+>>>>>>> parent of 2304a83... Proggress in analytics calculations.
 
             // let test = new Ticker('ewrdf');
 
@@ -70,11 +83,19 @@ function suggestAction(data) {
             // test.minPricePair = 'qterwt';
             // test.maxPrice = 65;
             // test.maxPricePair = 'rhydfg';
+<<<<<<< HEAD
 
             // console.log(test)
 
         })
 
+=======
+
+            // console.log(test)
+
+        })
+
+>>>>>>> parent of 2304a83... Proggress in analytics calculations.
 
 }
 
